@@ -1,0 +1,60 @@
+import csv
+import numpy as np
+
+## wineVals = np.zeros((4900, 12))
+
+with open('wine.csv', newline='') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar=' ')
+    rows = []
+    for row in spamreader:
+        rows.append([x for x in row])
+
+wineVals = np.array(rows)
+sortedWineVals = [[r for r in wineVals if r[11] == '1'], [r for r in wineVals if r[11] == '2'], [r for r in wineVals if r[11] == '3'], [r for r in wineVals if r[11] == '4'], [r for r in wineVals if r[11] == '5']]
+#print(sortedWineVals[3])
+
+class QualityAsDependent:
+
+    def __init__(self, sortedWineVals):
+        self.sortedWineVals = sortedWineVals
+
+    def getCertainTotals(self, qualityNum):  ## enter the quality num you want to use and the column of the attribute to get the totals of
+        print("GRABBING TOTALS FOR QUALITY:",(qualityNum+1))
+        totals = np.zeros((12,5), dtype=int)
+
+        for row in self.sortedWineVals[qualityNum]:
+            # print(row)
+            columnNum=0
+            for column in row:
+                # print(column)
+                if str(column).strip() == '1':
+                    totals[columnNum][0] += 1 
+                if column == '2':
+                    totals[columnNum][1] += 1 
+                if column == '3':
+                    totals[columnNum][2] += 1 
+                if column == '4':
+                    totals[columnNum][3] += 1 
+                if column == '5':
+                    totals[columnNum][4] += 1 
+                columnNum+=1
+        return totals
+
+obj = QualityAsDependent(sortedWineVals)
+qualityColumnTotals = [obj.getCertainTotals(i) for i in range(5)]
+
+print("\nTOTALS FOR QUALITY 1:")
+print (qualityColumnTotals[0])
+
+print("\nTOTALS FOR QUALITY 2:")
+print (qualityColumnTotals[1])
+
+print("\nTOTALS FOR QUALITY 3:")
+print (qualityColumnTotals[2])
+
+print("\nTOTALS FOR QUALITY 4:")
+print (qualityColumnTotals[3])
+
+print("\nTOTALS FOR QUALITY 5:")
+print (qualityColumnTotals[4])
+
