@@ -2,14 +2,17 @@ import csv
 import numpy as np
 
 ## wineVals = np.zeros((4900, 12))
+def loadData():
+    with open('wine.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',')
+        rows = []
+        for row in spamreader:
+            rows.append([x for x in row])
+    return rows
 
-with open('wine.csv', newline='') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar=' ')
-    rows = []
-    for row in spamreader:
-        rows.append([x for x in row])
+processedCSV = loadData()
 
-wineVals = np.array(rows)
+wineVals = np.array(processedCSV)
 sortedWineVals = [[r for r in wineVals if r[11] == '1'], [r for r in wineVals if r[11] == '2'], [r for r in wineVals if r[11] == '3'], [r for r in wineVals if r[11] == '4'], [r for r in wineVals if r[11] == '5']]
 #print(sortedWineVals[3])
 
@@ -40,8 +43,8 @@ class QualityAsDependent:
                 columnNum+=1
         return totals
 
-obj = QualityAsDependent(sortedWineVals)
-qualityColumnTotals = [obj.getCertainTotals(i) for i in range(5)]
+#obj = QualityAsDependent(sortedWineVals)
+#qualityColumnTotals = [obj.getCertainTotals(i) for i in range(5)]
 
 # print("\nTOTALS FOR QUALITY 1:")
 # print (qualityColumnTotals[0])
@@ -74,26 +77,30 @@ def formatTotals(total, qualityNum):
 
 
 
-running = True
-while(running):
-    print("\nPick an option:")
-    print("1: See Quality 1 totals")
-    print("2: See Quality 2 totals")
-    print("3: See Quality 3 totals")
-    print("4: See Quality 4 totals")
-    print("5: See Quality 5 totals")
-    print("6: quit")
-    response = input("\nEnter a num:")
+if __name__ == "__main__":
+    obj = QualityAsDependent(sortedWineVals)
+    qualityColumnTotals = [obj.getCertainTotals(i) for i in range(5)]
 
-    if (response == '1'):
-        formatTotals(qualityColumnTotals[0], 1)
-    if (response == '2'):
-        formatTotals(qualityColumnTotals[1], 2)
-    if (response == '3'):
-        formatTotals(qualityColumnTotals[2], 3)
-    if (response == '4'):
-        formatTotals(qualityColumnTotals[3], 4)
-    if (response == '5'):
-        formatTotals(qualityColumnTotals[4], 5)
-    if (response == '6'):
-        break
+    running = True
+    while(running):
+        print("\nPick an option:")
+        print("1: See Quality 1 totals")
+        print("2: See Quality 2 totals")
+        print("3: See Quality 3 totals")
+        print("4: See Quality 4 totals")
+        print("5: See Quality 5 totals")
+        print("6: quit")
+        response = input("\nEnter a num:")
+
+        if (response == '1'):
+            formatTotals(qualityColumnTotals[0], 1)
+        if (response == '2'):
+            formatTotals(qualityColumnTotals[1], 2)
+        if (response == '3'):
+            formatTotals(qualityColumnTotals[2], 3)
+        if (response == '4'):
+            formatTotals(qualityColumnTotals[3], 4)
+        if (response == '5'):
+            formatTotals(qualityColumnTotals[4], 5)
+        if (response == '6'):
+            break
