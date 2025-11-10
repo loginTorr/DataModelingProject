@@ -18,3 +18,12 @@ at one time. After testing, our top 3 most statistically significant variables e
 totalsulfurdioxide.
 
 ![alt text](image.png)
+
+Task 3: Given the most statistically significant data, we're running those variables through a naive bayes classifier.
+
+Our hope is that we can find the exact values of the "independent" variables that lead to a high quality wine (with
+values of either 4 or 5). 
+
+Task 4: We found the probabilities for these significant variables affecting quality. Now we want to try to 
+understand the dependencies between the variables. 
+
