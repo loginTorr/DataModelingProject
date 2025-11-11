@@ -53,5 +53,18 @@ def runNaiveBayes():
     print("Confusion Matrix:\n", cm)
     #print("\nClassification Report:\n", report)
 
+    class_means = pd.DataFrame(model.theta_, columns=resolved_features, index=model.classes_)
+    print("\n=== Mean Feature Values by Quality Class (Model Learned) ===")
+    print(class_means.round(3))
+
+    # === NEW: Show predicted probabilities for first 5 test samples ===
+    probs = model.predict_proba(X_test)
+    sample_df = pd.DataFrame(probs, columns=[f"P(Q={c})" for c in model.classes_])
+    sample_df[resolved_features] = X_test
+    sample_df["Predicted Quality"] = y_pred
+    sample_df["Actual Quality"] = y_test
+    print("\n=== Example Predictions (first 5) ===")
+    print(sample_df.head(5).round(3))
+
 if __name__ == "__main__":
     runNaiveBayes()
