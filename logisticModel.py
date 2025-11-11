@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 def runLogisticRegression():
@@ -26,6 +26,17 @@ def runLogisticRegression():
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
+    n = len(y)
+    k = X.shape[1]
+    # Calculate log likelihood
+    predictions = model.predict(X)
+    mse = mean_squared_error(y, predictions)
+    log_likelihood = -n / 2 * np.log(2 * np.pi * mse) - (1 / (2 * mse)) * np.sum((y - predictions) ** 2)
+
+    # AIC and BIC calculations
+    aic = 2 * k - 2 * log_likelihood
+    bic = np.log(n) * k - 2 * log_likelihood
+    
     # Evaluate
     acc = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
@@ -34,6 +45,8 @@ def runLogisticRegression():
     print("\n=== Logistic Regression Classification ===")
     print(f"Accuracy: {acc*100:.2f}%\n")
     print("Confusion Matrix:\n", cm)
+    print(f"\nAIC: {aic:.2f}")
+    print(f"BIC: {bic:.2f}")
     #print("\nClassification Report:\n", report)
 
 if __name__ == "__main__":

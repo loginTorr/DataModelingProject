@@ -1,8 +1,10 @@
 import pandas as pd
+import math as math
 import numpy as np
 from pgmpy.models import DiscreteBayesianNetwork
 from pgmpy.estimators import MaximumLikelihoodEstimator
 from pgmpy.inference import VariableElimination
+from pgmpy.estimators import AIC, BIC, K2
 from CSV_Reader import loadData
 
 def main():
@@ -13,6 +15,11 @@ def main():
 
     df = pd.DataFrame(data, columns=headers)
 
+    aic_score = AIC(df)
+    bic_score = BIC(df)
+    k2_score = K2(df)
+    
+
     #where we set attributes vs target variable
     features = ["alcohol", "volatileacidity", "totalsulfurdioxide", "density", "fixedacidity", "chlorides", "ph", "freesulfurdioxide", "residualsugar", "citricacid", "sulphates"]
     target = "quality"
@@ -21,6 +28,11 @@ def main():
     #the structure of the Bayes Network
     edges = [(f, target) for f in features]
     model = DiscreteBayesianNetwork(edges)
+
+    raw_aic = aic_score.score(model)
+    raw_bic = bic_score.score(model)
+    actual_aic = -2 * raw_aic  # = 2k - 2 ln(L)
+    actual_bic = -2 * raw_bic  # = k ln(N) - 2 ln(L)
 
     model.fit(df, estimator=MaximumLikelihoodEstimator)
     infer = VariableElimination(model)
@@ -38,7 +50,7 @@ def main():
     y_pred = np.array(y_pred, dtype=int)
     acc = (y_pred == y_true).mean()
     print("Features:", features)
-    print("Edges:", edges)
+    print("\nEdges:", edges)
     print(f"\nAccuracy (same data): {acc*100:.2f}%")
 
     #confusion matrix
@@ -48,10 +60,13 @@ def main():
     for t, p in zip(y_true, y_pred):
         cm[lab_to_idx[t], lab_to_idx[p]] += 1
 
-    print("\nConfusion Matrix (rows=true, cols.pred):")
-    print("    " + "    ".join([f"{1:>3}" for l in labels]))
+    print("\nConfusion Matrix (rows=true, cols=pred):")
+    print(" " + "   ".join([f"{l:>3}" for l in labels]))
     for i, l in enumerate(labels):
-        print(f"{1:>3} " + "  ".join([f"{v:>3}" for v in cm[i]]))
+        print(f"{l:>3} " + "  ".join([f"{v:>3}" for v in cm[i]]))
+
+    print("\nAIC:", actual_aic)
+    print("BIC:", actual_bic)
 
 if __name__ == "__main__":
     main()
